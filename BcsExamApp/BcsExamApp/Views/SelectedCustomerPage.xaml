@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converter="clr-namespace:BcsExamApp.Converters"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="BcsExamApp.Views.SelectedCustomerPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:ReverseBoolConverter x:Key="RevBool" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout Margin="16" Spacing="0">
+            <Label FontSize="Medium">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Reservation for "/>
+                        <Span Text="{Binding CustomerInfo.GuestName}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            
+            <Label Text="Email" Margin="0,20,0,0"/>
+            <Entry Placeholder="Enter your email here" 
+                   Text="{Binding Email.Value}"
+                   Keyboard="Email"/>            
+            <Label Text="{Binding Email.Error}"
+                   IsVisible="{Binding Email.IsValid, Converter={StaticResource RevBool}}"
+                   TextColor="DarkRed"
+                   Margin="0,0,0,20"/>
+
+            <Button Text="Post Reservation"
+                    TextColor="White"
+                    BackgroundColor="{StaticResource xamBlue}"
+                    Command="{Binding PostReservationCommand}"/>
+
+            <Label Text="{Binding ResponseMsg}"
+                   HorizontalTextAlignment="Center"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="Start"
+                   Margin="0,30,0,0"/>
+
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                               IsRunning="True"
+                               Margin="0,20,0,0"
+                               HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="Start"/>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

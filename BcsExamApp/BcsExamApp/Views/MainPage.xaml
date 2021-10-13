@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converter="clr-namespace:BcsExamApp.Converters"
+             xmlns:prism="http://prismlibrary.com"
+             x:Class="BcsExamApp.Views.MainPage"
+             Title="{Binding Title}"
+             Visual="Material">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:ReverseBoolConverter x:Key="RevBool" />
+            <converter:EmptyListToBoolConverter x:Key="EmptyToBool" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ListView ItemsSource="{Binding Customers}"
+                  IsRefreshing="{Binding IsBusy}"
+                  HasUnevenRows="True"
+                  x:Name="customerList">
+            <ListView.Behaviors>
+                <prism:EventToCommandBehavior Command="{Binding SelectCustomerCommand}"
+                                              CommandParameter="{Binding Source={x:Reference customerList}}"
+                                              EventName="ItemSelected" />
+            </ListView.Behaviors>
+            <ListView.Header>
+                <StackLayout HorizontalOptions="FillAndExpand"
+                             VerticalOptions="Start"
+                             Padding="16">
+                    
+                    <Label Text="Park Code" />
+                    <Entry Placeholder="Enter code here" Text="{Binding ParkCode.Value}"/>
+                    <Label Text="{Binding ParkCode.Error}"
+                           IsVisible="{Binding ParkCode.IsValid, Converter={StaticResource RevBool}}"
+                           TextColor="DarkRed"/>
+
+                    <Label Text="Arriving Date" />
+                    <DatePicker Format="yyyy-MM-dd" Date="{Binding ArrivingDate.Value}"/>
+                    <Label Text="{Binding ArrivingDate.Error}"
+                           IsVisible="{Binding ArrivingDate.IsValid, Converter={StaticResource RevBool}}"
+                           TextColor="DarkRed"/>
+
+                    <Button Text="Search"
+                            TextColor="White"
+                            BackgroundColor="{StaticResource xamBlue}"
+                            Command="{Binding SearchCustomerCommand}"/>
+                    <Label Text="{Binding ResponseMsg}"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Margin="0,30,0,0"
+                           IsVisible="{Binding Customers, Converter={StaticResource EmptyToBool}}"/>
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="16" Spacing="0">
+                            <Label Text="{Binding GuestName}" FontSize="Medium"/>                            
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Arrived: "/>
+                                        <Span Text="{Binding Arrived}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Departure: "/>
+                                        <Span Text="{Binding Depart}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+    </ContentPage.Content>
+
+
+</ContentPage>
